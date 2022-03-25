@@ -1,0 +1,135 @@
+Answers for parts  1 - 5
+Enter your answers in the designated location. Do NOT remove lines that start
+with '=' signs. Removing these lines will break our grading scrips and will
+result in 0 points. Also, keep lines to a max of 80 chars long (you do not
+need to worry if the top command is longer than 80 chars). Also, please limit
+your answers to about 40 words.
+
+================================== P1Q1 start ==================================
+Describe how you created the 70%/30% split. 
+    - Include the command lines you executed
+    - Indicate if you needed root privileges for any of those commands
+    - Include the top output
+
+    /* TODO */ 
+
+=================================== P1Q1 end ===================================
+
+================================== P1Q2 start ==================================
+Describe how you created a real-time priority task.
+    - Include the command lines you executed
+    - Indicate if you needed root privileges for any of those commands
+    - Include the top output
+
+    /* TODO */ 
+
+=================================== P1Q2 end ===================================
+
+
+
+================================== P2Q1 start ==================================
+The output of diff or diffconfig when comparing the config files for your 
+mainline fallback kernel and your MuQSS kernel
+
+    /* TODO */
+
+=================================== P2Q1 end ===================================
+
+================================== P2Q2 start ==================================
+Indicate you successfully patched, built, and booted into your MuQSS-enabled 
+Linux kernel.
+
+    /* TODO */ 
+
+=================================== P2Q2 end ===================================
+
+
+
+================================== P3Q1 start ==================================
+Describe how you created the 70%/30% split. 
+    - Include the command lines you executed
+    - Indicate if you needed root privileges for any of those commands
+    - How were the results different from P1Q1, if at all.
+
+    /* TODO */
+
+=================================== P3Q1 end ===================================
+
+================================== P3Q2 start ==================================
+Describe how you created a real-time priority task. 
+    - Include the command lines you executed
+    - Indicate if you needed root privileges for any of those commands
+    - How were the results different from P1Q2, if at all.
+
+    /* TODO */ 
+
+=================================== P3Q2 end ===================================
+
+================================== P3Q3 start ==================================
+MuQSS features unprivileged real-time tasks. Perform the previous task with and
+without root privileges, and describe the differences. 
+
+    /* TODO */
+
+=================================== P3Q3 end ===================================
+
+
+
+================================== P4Q1 start ==================================
+Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
+and your MuQSS-patched kernels.
+    
+    /* TODO */ 
+
+=================================== P4Q1 end ===================================
+
+================================== P4Q2 start ==================================
+Design an experiment that you think will highlight MuQSS’s strength. Perform 
+the experiment and report your findings.
+
+    /* TODO */ 
+
+=================================== P4Q2 end ===================================
+
+
+
+================================== P5Q1 start ==================================
+Briefly describe the advantages and disadvantages of a larger HZ.
+
+    /* TODO */ 
+
+=================================== P5Q1 end ===================================
+
+================================== P5Q2 start ==================================
+What is the HZ currently configured for your running Linux system?
+
+    /* TODO */ 
+
+=================================== P5Q2 end ===================================
+
+================================== P5Q3 start ==================================
+What are jiffies? Explain the relationship between jiffies, HZ, and time.
+
+    /* TODO */ 
+
+=================================== P5Q3 end ===================================
+
+================================== P5Q4 start ==================================
+Find the current value of jiffies in your system.
+    - In minutes, how much time does this jiffies value represent?
+    - Does it match the uptime reported by the uptime command? (Hint: it 
+      doesn’t.) Please give the formula to convert jiffies to the current 
+      (real) uptime, in minutes.
+    - Why does this large difference exist? (Hint: in 32-bit Linux systems,
+      jiffies is a 32-bit value.)
+
+    /* TODO */ 
+
+=================================== P5Q4 end ===================================
+
+================================== P5Q5 start ==================================
+What are Niffies? How do they differ from Jiffies?
+
+    /* TODO */ 
+
+=================================== P5Q5 end ===================================
