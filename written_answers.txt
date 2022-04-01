@@ -1,4 +1,4 @@
-Answers for parts  1 - 5
+﻿Answers for parts  1 - 5
 Enter your answers in the designated location. Do NOT remove lines that start
 with '=' signs. Removing these lines will break our grading scrips and will
 result in 0 points. Also, keep lines to a max of 80 chars long (you do not
@@ -7,21 +7,103 @@ your answers to about 40 words.
 
 ================================== P1Q1 start ==================================
 Describe how you created the 70%/30% split. 
+
+1.At the test.py’s directory, run create10.sh to create 10 processes.
+The first group, which should use 70% of the CPU contains the processes of which nice values are  {10, 10, 10, 14, 14}. Their weight sum up to 420.
+The second group, which use 30% of the CPU contains the processes of which nice values are {15, 15, 15, 15, 15}. Their weight sum up to 180. 
+420:180 = 7:3, thus these processes can create the 70-30 situation.
+2. Use taskset to let all 10 processes run on cpu1. <pid1> <pid2> … <pid10> are pids for the 10 processes, which can be found in the output of top command.
+
     - Include the command lines you executed
+
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+nice -n 10 pyton3 test.py &
+top
+taskset -cp 1 <pid1>
+taskset -cp 1 <pid2>
+taskset -cp 1 <pid3>
+taskset -cp 1 <pid4>
+taskset -cp 1 <pid5>
+taskset -cp 1 <pid6>
+taskset -cp 1 <pid7>
+taskset -cp 1 <pid8>
+taskset -cp 1 <pid9>
+taskset -cp 1 <pid10>
+
     - Indicate if you needed root privileges for any of those commands
+
+No command need root privilege
+
     - Include the top output
 
-    /* TODO */ 
+top - 10:31:55 up  6:50,  1 user,  load average: 10.16, 6.81, 3.69
+Tasks: 182 total,  11 running, 171 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.2 us,  0.2 sy, 50.2 ni, 47.7 id,  0.0 wa,  0.0 hi,  1.8 si,  0.0 st
+MiB Mem :   3902.4 total,    111.6 free,    692.4 used,   3098.4 buff/cache
+MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2902.4 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
+   4209 aster233  30  10   14672   7420   5036 R  18.3   0.2   0:58.94 python3  
+   4211 aster233  30  10   14672   7424   5036 R  18.3   0.2   0:59.43 python3  
+   4210 aster233  30  10   14672   7332   4948 R  17.9   0.2   1:01.86 python3  
+   4212 aster233  34  14   14672   7216   4832 R   7.6   0.2   0:24.15 python3  
+   4213 aster233  34  14   14672   7236   4852 R   7.6   0.2   0:24.01 python3  
+   4214 aster233  35  15   14672   7432   5032 R   6.0   0.2   0:19.22 python3  
+   4215 aster233  35  15   14672   7376   4992 R   6.0   0.2   0:19.63 python3  
+   4216 aster233  35  15   14672   7184   4804 R   6.0   0.2   0:20.15 python3  
+   4217 aster233  35  15   14672   7280   4896 R   6.0   0.2   0:20.78 python3  
+   4218 aster233  35  15   14672   7288   4904 R   6.0   0.2   0:22.14 python3
+
+
 
 =================================== P1Q1 end ===================================
 
 ================================== P1Q2 start ==================================
 Describe how you created a real-time priority task.
+
+Add a new real-time process which uses round robin policy.
+Then let the new process run on the same cpu with the previous 10 processes.
+<pid11> is the pid of the new process.
+
     - Include the command lines you executed
+
+sudo chrt -r 1 python3 test.py &
+top
+sudo taskset -cp 1 <pid11>
+
     - Indicate if you needed root privileges for any of those commands
+
+Runing a real time process need root privilege. Setting affinity of a root user’s process also need root privilege.
+
     - Include the top output
 
-    /* TODO */ 
+
+top - 10:38:24 up  6:57,  1 user,  load average: 12.45, 10.29, 6.32
+Tasks: 183 total,  14 running, 169 sleeping,   0 stopped,   0 zombie
+%Cpu(s): 48.2 us,  0.5 sy,  2.3 ni, 46.8 id,  0.0 wa,  0.0 hi,  2.2 si,  0.0 st
+MiB Mem :   3902.4 total,    125.3 free,    685.9 used,   3091.2 buff/cache
+MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2908.9 avail Mem 
+
+    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
+   4265 root      -2   0   14668   7280   4904 R  95.0   0.2   1:43.22 python3  
+   4209 aster233  30  10   14672   7420   5036 R   1.0   0.2   1:59.12 python3  
+   4211 aster233  30  10   14672   7424   5036 R   1.0   0.2   1:59.61 python3  
+   4210 aster233  30  10   14672   7332   4948 R   0.7   0.2   2:02.04 python3  
+   4212 aster233  34  14   14672   7216   4832 R   0.3   0.2   0:48.76 python3  
+   4213 aster233  34  14   14672   7236   4852 R   0.3   0.2   0:48.63 python3  
+   4214 aster233  35  15   14672   7432   5032 R   0.3   0.2   0:38.91 python3  
+   4215 aster233  35  15   14672   7376   4992 R   0.3   0.2   0:39.32 python3  
+   4216 aster233  35  15   14672   7184   4804 R   0.3   0.2   0:39.84 python3  
+   4217 aster233  35  15   14672   7280   4896 R   0.3   0.2   0:40.47 python3  
+   4218 aster233  35  15   14672   7288   4904 R   0.3   0.2   0:41.84 python3 
 
 =================================== P1Q2 end ===================================
 
