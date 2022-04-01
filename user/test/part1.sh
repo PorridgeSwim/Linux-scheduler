@@ -1,0 +1,10 @@
+nice -n 16 python3 test.py &
+nice -n 16 python3 test.py &
+nice -n 16 python3 test.py &
+nice -n 16 python3 test.py &
+nice -n 16 python3 test.py &
+nice -n 12 python3 test.py &
+nice -n 12 python3 test.py &
+nice -n 12 python3 test.py &
+nice -n 12 python3 test.py &
+nice -n 12 python3 test.py &
