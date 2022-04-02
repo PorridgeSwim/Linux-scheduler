@@ -161,7 +161,19 @@ without root privileges, and describe the differences.
 Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
 and your MuQSS-patched kernels.
     
-    /* TODO */ 
+We run time make -j2 on both kernels, here is our result:
+
+On Muqss kernel:
+real time: 10m42s
+user: 19m59s
+sys: 2m11s
+
+On cs-4118 kernel:
+real time: 10m24s
+user: 16m45s
+sys: 2m46s
+
+
 
 =================================== P4Q1 end ===================================
 
