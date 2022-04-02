@@ -10,38 +10,38 @@ Describe how you created the 70%/30% split.
 
 1.At the test.py’s directory, run create10.sh to create 10 processes.
 The first group, which should use 70% of the CPU contains the processes of which nice values are  {10, 10, 10, 14, 14}. Their weight sum up to 420.
-The second group, which use 30% of the CPU contains the processes of which nice values are {15, 15, 15, 15, 15}. Their weight sum up to 180. 
+The second group, which use 30% of the CPU contains the processes of which nice values are {15, 15, 15, 15, 15}. Their weight sum up to 180.
 420:180 = 7:3, thus these processes can create the 70-30 situation.
 2. Use taskset to let all 10 processes run on cpu1. <pid1> <pid2> … <pid10> are pids for the 10 processes, which can be found in the output of top command.
 
-    - Include the command lines you executed
+	- Include the command lines you executed
 
 taskset -c 1 nice -n 12 ./myprogram &
 taskset -c 1 nice -n 16 ./myprogram &
 htop
 
-    - Indicate if you needed root privileges for any of those commands
+	- Indicate if you needed root privileges for any of those commands
 
 No command need root privilege
 
-    - Include the top output
+	- Include the top output
 
-    0[|                          1.3%]   Tasks: 83, 109 thr; 2 running
-    1[|||||||||||||||||||||||||100.0%]   Load average: 9.99 6.86 3.90 
+	0[|                          1.3%]   Tasks: 83, 109 thr; 2 running
+	1[|||||||||||||||||||||||||100.0%]   Load average: 9.99 6.86 3.90
   Mem[|||||||||||||||||||||489M/3.81G]   Uptime: 02:22:31
   Swp[                        0K/975M]
 
-    PID▽USER      PRI  NI  VIRT   RES   SHR S CPU% MEM%   TIME+  Command
-   2101 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./myprogram
-   2100 debbie     36  16  2172    72     0 R  6.6  0.0  0:17.37 ./myprogram
-   2099 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./myprogram
-   2098 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./myprogram
-   2097 debbie     36  16  2172    72     0 R  6.6  0.0  0:17.37 ./myprogram
-   2095 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.49 ./myprogram
-   2094 debbie     32  12  2172    68     0 R 14.6  0.0  0:42.49 ./myprogram
-   2093 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.48 ./myprogram
-   2092 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.49 ./myprogram
-   2091 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.48 ./myprogram
+	PID▽USER      PRI  NI  VIRT   RES   SHR S CPU% MEM%   TIME+  Command
+	2101 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./myprogram
+	2100 debbie     36  16  2172    72     0 R  6.6  0.0  0:17.37 ./myprogram
+	2099 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./myprogram
+	2098 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./myprogram
+	2097 debbie     36  16  2172    72     0 R  6.6  0.0  0:17.37 ./myprogram
+	2095 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.49 ./myprogram
+	2094 debbie     32  12  2172    68     0 R 14.6  0.0  0:42.49 ./myprogram
+	2093 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.48 ./myprogram
+	2092 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.49 ./myprogram
+	2091 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.48 ./myprogram
 
 
 =================================== P1Q1 end ===================================
@@ -53,37 +53,37 @@ Add a new real-time process which uses round robin policy.
 Then let the new process run on the same cpu with the previous 10 processes.
 <pid11> is the pid of the new process.
 
-    - Include the command lines you executed
+	- Include the command lines you executed
 
 sudo chrt -r 1 python3 test.py &
 top
 sudo taskset -cp 1 <pid11>
 
-    - Indicate if you needed root privileges for any of those commands
+	- Indicate if you needed root privileges for any of those commands
 
-Runing a real time process need root privilege. Setting affinity of a root user’s process also need root privilege.
+Running a real time process need root privilege. Setting affinity of a root user’s process also need root privilege.
 
-    - Include the top output
+	- Include the top output
 
 
 top - 10:38:24 up  6:57,  1 user,  load average: 12.45, 10.29, 6.32
 Tasks: 183 total,  14 running, 169 sleeping,   0 stopped,   0 zombie
 %Cpu(s): 48.2 us,  0.5 sy,  2.3 ni, 46.8 id,  0.0 wa,  0.0 hi,  2.2 si,  0.0 st
 MiB Mem :   3902.4 total,    125.3 free,    685.9 used,   3091.2 buff/cache
-MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2908.9 avail Mem 
+MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2908.9 avail Mem
 
-    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
-   4265 root      -2   0   14668   7280   4904 R  95.0   0.2   1:43.22 python3  
-   4209 aster233  30  10   14672   7420   5036 R   1.0   0.2   1:59.12 python3  
-   4211 aster233  30  10   14672   7424   5036 R   1.0   0.2   1:59.61 python3  
-   4210 aster233  30  10   14672   7332   4948 R   0.7   0.2   2:02.04 python3  
-   4212 aster233  34  14   14672   7216   4832 R   0.3   0.2   0:48.76 python3  
-   4213 aster233  34  14   14672   7236   4852 R   0.3   0.2   0:48.63 python3  
-   4214 aster233  35  15   14672   7432   5032 R   0.3   0.2   0:38.91 python3  
-   4215 aster233  35  15   14672   7376   4992 R   0.3   0.2   0:39.32 python3  
-   4216 aster233  35  15   14672   7184   4804 R   0.3   0.2   0:39.84 python3  
-   4217 aster233  35  15   14672   7280   4896 R   0.3   0.2   0:40.47 python3  
-   4218 aster233  35  15   14672   7288   4904 R   0.3   0.2   0:41.84 python3 
+	PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   4265 root      -2   0   14668   7280   4904 R  95.0   0.2   1:43.22 python3
+   4209 aster233  30  10   14672   7420   5036 R   1.0   0.2   1:59.12 python3
+   4211 aster233  30  10   14672   7424   5036 R   1.0   0.2   1:59.61 python3
+   4210 aster233  30  10   14672   7332   4948 R   0.7   0.2   2:02.04 python3
+   4212 aster233  34  14   14672   7216   4832 R   0.3   0.2   0:48.76 python3
+   4213 aster233  34  14   14672   7236   4852 R   0.3   0.2   0:48.63 python3
+   4214 aster233  35  15   14672   7432   5032 R   0.3   0.2   0:38.91 python3
+   4215 aster233  35  15   14672   7376   4992 R   0.3   0.2   0:39.32 python3
+   4216 aster233  35  15   14672   7184   4804 R   0.3   0.2   0:39.84 python3
+   4217 aster233  35  15   14672   7280   4896 R   0.3   0.2   0:40.47 python3
+   4218 aster233  35  15   14672   7288   4904 R   0.3   0.2   0:41.84 python3
 
 =================================== P1Q2 end ===================================
 
@@ -93,7 +93,7 @@ MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2908.9 avail Mem
 The output of diff or diffconfig when comparing the config files for your 
 mainline fallback kernel and your MuQSS kernel
 
-    /* TODO */
+	/* TODO */
 
 =================================== P2Q1 end ===================================
 
@@ -101,7 +101,7 @@ mainline fallback kernel and your MuQSS kernel
 Indicate you successfully patched, built, and booted into your MuQSS-enabled 
 Linux kernel.
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P2Q2 end ===================================
 
@@ -109,21 +109,21 @@ Linux kernel.
 
 ================================== P3Q1 start ==================================
 Describe how you created the 70%/30% split. 
-    - Include the command lines you executed
-    - Indicate if you needed root privileges for any of those commands
-    - How were the results different from P1Q1, if at all.
+	- Include the command lines you executed
+	- Indicate if you needed root privileges for any of those commands
+	- How were the results different from P1Q1, if at all.
 
-    /* TODO */
+	/* TODO */
 
 =================================== P3Q1 end ===================================
 
 ================================== P3Q2 start ==================================
-Describe how you created a real-time priority task. 
-    - Include the command lines you executed
-    - Indicate if you needed root privileges for any of those commands
-    - How were the results different from P1Q2, if at all.
+Describe how you created a real-time priority task.
+	- Include the command lines you executed
+	- Indicate if you needed root privileges for any of those commands
+	- How were the results different from P1Q2, if at all.
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P3Q2 end ===================================
 
@@ -131,7 +131,7 @@ Describe how you created a real-time priority task.
 MuQSS features unprivileged real-time tasks. Perform the previous task with and
 without root privileges, and describe the differences. 
 
-    /* TODO */
+	/* TODO */
 
 =================================== P3Q3 end ===================================
 
@@ -140,8 +140,8 @@ without root privileges, and describe the differences.
 ================================== P4Q1 start ==================================
 Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
 and your MuQSS-patched kernels.
-    
-    /* TODO */ 
+
+	/* TODO */
 
 =================================== P4Q1 end ===================================
 
@@ -149,7 +149,7 @@ and your MuQSS-patched kernels.
 Design an experiment that you think will highlight MuQSS’s strength. Perform 
 the experiment and report your findings.
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P4Q2 end ===================================
 
@@ -158,40 +158,40 @@ the experiment and report your findings.
 ================================== P5Q1 start ==================================
 Briefly describe the advantages and disadvantages of a larger HZ.
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P5Q1 end ===================================
 
 ================================== P5Q2 start ==================================
 What is the HZ currently configured for your running Linux system?
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P5Q2 end ===================================
 
 ================================== P5Q3 start ==================================
 What are jiffies? Explain the relationship between jiffies, HZ, and time.
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P5Q3 end ===================================
 
 ================================== P5Q4 start ==================================
 Find the current value of jiffies in your system.
-    - In minutes, how much time does this jiffies value represent?
-    - Does it match the uptime reported by the uptime command? (Hint: it 
-      doesn’t.) Please give the formula to convert jiffies to the current 
-      (real) uptime, in minutes.
-    - Why does this large difference exist? (Hint: in 32-bit Linux systems,
-      jiffies is a 32-bit value.)
+	- In minutes, how much time does this jiffies value represent?
+	- Does it match the uptime reported by the uptime command? (Hint: it
+	  doesn’t.) Please give the formula to convert jiffies to the current
+	  (real) uptime, in minutes.
+	- Why does this large difference exist? (Hint: in 32-bit Linux systems,
+	  jiffies is a 32-bit value.)
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P5Q4 end ===================================
 
 ================================== P5Q5 start ==================================
 What are Niffies? How do they differ from Jiffies?
 
-    /* TODO */ 
+	/* TODO */
 
 =================================== P5Q5 end ===================================

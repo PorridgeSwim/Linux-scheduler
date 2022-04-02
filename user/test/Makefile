@@ -1,15 +1,12 @@
-CC = gcc
-CFLAGS = -g -Wall -Werror
-LDFLAGS = -g -pthread
+all: program1 program2
 
-TARGETS = myprogram
-OBJS = myprogram.o
+program1: myprogram.c
+	gcc -o myprogram myprogram.c
 
-$(TARGETS):
-$(OBJS):
+program2: myprogram2.c
+	gcc -o myprogram2 myprogram2.c
 
-PHONY += clean
 clean:
-	rm -rf $(TARGETS) a.out *.o
+	rm -rf myprogram myprogram2
 
 .PHONY: $(PHONY)
