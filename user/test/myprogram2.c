@@ -18,6 +18,7 @@ int main(void)
 	int i = 0;
 	pid_t pid;
 	struct sched_param real_time_param;
+
 	real_time_param.sched_priority = 30;
 
 	for (i = 0; i < 5; i++) {
