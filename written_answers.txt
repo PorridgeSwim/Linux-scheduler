@@ -169,7 +169,10 @@ and your MuQSS-patched kernels.
 Design an experiment that you think will highlight MuQSS’s strength. Perform 
 the experiment and report your findings.
 
-    /* TODO */ 
+We compress the hw5 directory (1.1GB) to test the speed of two kernels, and the
+final hw5.zip file is 429MB. We found that both kernel use almost same real time
+to compress the hw5. But muqss kernel used more time on user and less time on
+system than the origin kernel. 
 
 =================================== P4Q2 end ===================================
 
