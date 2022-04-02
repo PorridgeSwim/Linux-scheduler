@@ -181,7 +181,10 @@ Describe how you created a real-time priority task.
 MuQSS features unprivileged real-time tasks. Perform the previous task with and
 without root privileges, and describe the differences. 
 
-With root privileges, the real time process still occupy about 70% of the cpu while other 10 process hardly occupied the cpu. Without the root privileges, the real time process occupied about 40%-60% cpu, while the other 10 process occupies about 0.5%-3% cpu.
+With root privileges, the real time process still occupy about 70% of the cpu 
+while other 10 process hardly occupied the cpu. Without the root privileges, 
+the real time process occupied about 40%-60% cpu, while the other 10 process 
+occupies about 0.5%-3% cpu.
 
 =================================== P3Q3 end ===================================
 
