@@ -589,6 +589,9 @@ struct sched_dl_entity {
 #endif
 };
 
+struct sched_freezer_entity {
+};
+
 #ifdef CONFIG_UCLAMP_TASK
 /* Number of utilization clamp buckets (shorter alias) */
 #define UCLAMP_BUCKETS CONFIG_UCLAMP_BUCKETS_COUNT
