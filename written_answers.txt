@@ -162,16 +162,17 @@ Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
 and your MuQSS-patched kernels.
     
 We run time make -j2 on both kernels, here is our result:
+The Muqss kernel had shorter system time, but longer user time and real time.
 
 On Muqss kernel:
-real time: 10m42s
-user: 19m59s
-sys: 2m11s
+real time: 11m36s
+user: 21m24s
+sys: 2m17s
 
 On cs-4118 kernel:
-real time: 10m24s
-user: 16m45s
-sys: 2m46s
+real time: 10m13s
+user: 16m31s
+sys: 2m38s
 
 
 
