@@ -2,6 +2,8 @@
 
 #include <trace/events/power.h>
 
+int sched_freezer_timeslice = FREEZER_TIMESLICE;
+
 static inline struct task_struct *fz_task_of(struct sched_freezer_entity *fz_se)
 {
 	return container_of(fz_se, struct task_struct, fz);
@@ -76,21 +78,69 @@ enqueue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
 {
 	struct sched_freezer_entity *fz_se = &p->fz;
 
-	// check the defination of ENQUEUE_WAKEUP
-	// check the defination of flags
-	if (flags & ENQUEUE_WAKEUP)
-		fz_se->timeout = 0;
-
 	enqueue_freezer_entity(fz_se, flags);
-
 }
 
 static void dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
 {
 	// get freezer entity
 	struct sched_freezer_entity *fz_se = &p->fz;
+
 	dequeue_fz_entity(fz_se, flags);
 }
+
+static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, int flags)
+{
+	int i;
+	unsigned int tmp;
+	unsigned int min;
+	int count = 0;
+	int cur_cpu; 
+
+	for_each_possible_cpu(i) {
+		if (count == 0) {
+			min = cpu_rq(i)->fz->fz_nr_running;
+			cur_cpu = i;
+			count = 1;
+		} else{
+			tmp = cpu_rq(i)->fz->fz_nr_running;
+			if (min > tmp) {
+				min = tmp;
+				cur_cpu = i;
+			}
+		}
+	}
+
+	return cur_cpu;
+}
+
+static void taks_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
+{
+	struct sched_freezer_entity *fz_se = &p->fz;
+
+	update_curr_fz(rq);
+	update_fz_rq_load_avg(rq_clock_pelt(rq), rq, 1);
+
+	watchdog(rq, p);
+
+	if (--p->fz.time_slice)
+		return;
+
+	p->fz.time_slice = sched_freezer_timeslice;
+
+	if (fz_se->fz_list.prev != fz_se->fz_list.next) {
+		list_move_tail(&fz_se->fz_list, fz_rq_of_se(fz_se));
+		resched_curr(rq);
+		return;
+	}
+}
+
+void init_fz_rq(struct freezer_rq *fz_rq)
+{
+	INIT_LIST_HEAD(fz_rq->fz_list);
+	fz_rq->fz_nr_running = 0;
+}
+
 const struct sched_class freezer_sched_class
 	__section("__freezer_sched_class") = {
 	/* no enqueue/yield_task for idle tasks */
@@ -105,12 +155,12 @@ const struct sched_class freezer_sched_class
 	.set_next_task          = set_next_task_idle,
 
 #ifdef CONFIG_SMP
-	.balance		= balance_idle,
-	.select_task_rq		= select_task_rq_idle,
-	.set_cpus_allowed	= set_cpus_allowed_common,
+	//.balance		= balance_freezer,
+	.select_task_rq		= select_task_rq_freezer,
+	//.set_cpus_allowed	= set_cpus_allowed_common,
 #endif
 
-	.task_tick		= task_tick_idle,
+	.task_tick		= task_tick_freezer,
 
 	.prio_changed		= prio_changed_idle,
 	.switched_to		= switched_to_idle,
