@@ -11,6 +11,7 @@
 #include <linux/sched/cputime.h>
 #include <linux/sched/deadline.h>
 #include <linux/sched/debug.h>
+#include <linux/sched/freezer.h>
 #include <linux/sched/hotplug.h>
 #include <linux/sched/idle.h>
 #include <linux/sched/init.h>
@@ -517,7 +518,7 @@ struct cfs_bandwidth { };
 
 #endif	/* CONFIG_CGROUP_SCHED */
 
-struct freezer_rq{ 
+struct freezer_rq{
 	struct list_head	fz_list;  // freezer run queue head
 	unsigned int		fz_nr_running;
 }; //aoxue 4/3
@@ -1893,6 +1894,11 @@ static inline bool sched_rt_runnable(struct rq *rq)
 static inline bool sched_fair_runnable(struct rq *rq)
 {
 	return rq->cfs.nr_running > 0;
+}
+
+static inline bool sched_freezer_runnable(struct rq *rq)
+{
+	return rq->fz.fz_nr_running > 0;
 }
 
 extern struct task_struct *pick_next_task_fair(struct rq *rq, struct task_struct *prev, struct rq_flags *rf);
