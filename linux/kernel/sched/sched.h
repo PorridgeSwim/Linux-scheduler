@@ -356,6 +356,7 @@ extern bool dl_cpu_busy(unsigned int cpu);
 
 struct cfs_rq;
 struct rt_rq;
+struct freezer_rq; //aoxue 4/3
 
 extern struct list_head task_groups;
 
@@ -515,6 +516,8 @@ static inline void set_task_rq_fair(struct sched_entity *se,
 struct cfs_bandwidth { };
 
 #endif	/* CONFIG_CGROUP_SCHED */
+
+struct freezer_rq{ }; //aoxue 4/3
 
 /* CFS-related fields in a runqueue */
 struct cfs_rq {

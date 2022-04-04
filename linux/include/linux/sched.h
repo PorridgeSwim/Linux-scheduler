@@ -494,6 +494,8 @@ struct sched_entity {
 #endif
 };
 
+struct sched_freezer_entity { };
+
 struct sched_rt_entity {
 	struct list_head		run_list;
 	unsigned long			timeout;
