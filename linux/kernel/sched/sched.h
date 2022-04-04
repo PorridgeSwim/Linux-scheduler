@@ -517,7 +517,10 @@ struct cfs_bandwidth { };
 
 #endif	/* CONFIG_CGROUP_SCHED */
 
-struct freezer_rq{ }; //aoxue 4/3
+struct freezer_rq{ 
+	struct list_head	fz_list;  // freezer run queue head
+	unsigned int		fz_nr_running;
+}; //aoxue 4/3
 
 /* CFS-related fields in a runqueue */
 struct cfs_rq {
@@ -935,6 +938,7 @@ struct rq {
 	struct cfs_rq		cfs;
 	struct rt_rq		rt;
 	struct dl_rq		dl;
+	struct freezer_rq	fz;
 
 #ifdef CONFIG_FAIR_GROUP_SCHED
 	/* list of leaf cfs_rq on this CPU: */
