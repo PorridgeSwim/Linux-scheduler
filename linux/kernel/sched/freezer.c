@@ -119,9 +119,6 @@ static void taks_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
 	struct sched_freezer_entity *fz_se = &p->fz;
 
 	update_curr_fz(rq);
-	update_fz_rq_load_avg(rq_clock_pelt(rq), rq, 1);
-
-	watchdog(rq, p);
 
 	if (--p->fz.time_slice)
 		return;
@@ -135,6 +132,30 @@ static void taks_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
 	}
 }
 
+/*
+ * Update the current task's runtime statistics. Skip current tasks that
+ * are not in our scheduling class.
+ */
+static void update_curr_fz(struct rq *rq)
+{
+	struct task_struct *curr = rq->curr;
+	struct sched_freezer_entity *fz_se = &curr->fz;
+	u64 delta_exec;
+	u64 now;
+
+	if (curr->sched_class != &freezer_sched_class)
+		return;
+
+	now = rq_clock_task(rq);
+	delta_exec = now - curr->se.exec_start;
+	if (unlikely((s64)delta_exec <= 0))
+		return;
+
+	schedstat_set(curr->se.statistics.exec_max,
+		      max(curr->se.statistics.exec_max, delta_exec));
+
+}
+
 void init_fz_rq(struct freezer_rq *fz_rq)
 {
 	INIT_LIST_HEAD(fz_rq->fz_list);
@@ -143,28 +164,18 @@ void init_fz_rq(struct freezer_rq *fz_rq)
 
 const struct sched_class freezer_sched_class
 	__section("__freezer_sched_class") = {
-	/* no enqueue/yield_task for idle tasks */
 
 	.enqueue_task		= enqueue_task_freezer,
 	.dequeue_task		= dequeue_task_freezer,
 
-	.check_preempt_curr	= check_preempt_curr_idle,
-
 	.pick_next_task		= pick_next_task_idle,
-	.put_prev_task		= put_prev_task_idle,
-	.set_next_task          = set_next_task_idle,
 
 #ifdef CONFIG_SMP
-	//.balance		= balance_freezer,
 	.select_task_rq		= select_task_rq_freezer,
-	//.set_cpus_allowed	= set_cpus_allowed_common,
 #endif
 
 	.task_tick		= task_tick_freezer,
-
-	.prio_changed		= prio_changed_idle,
-	.switched_to		= switched_to_idle,
-	.update_curr		= update_curr_idle,
+	.update_curr		= update_curr_freezer,
 #ifdef CONFIG_SMP
 #endif
 };
