@@ -64,7 +64,7 @@ static void __enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigne
 static void enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigned int flags)
 {
 	// get the runqueue of a task
-	struct rq *rq = rq_of_fz_se(fz_se);
+	// struct rq *rq = rq_of_fz_se(fz_se);
 
 	// dequeue_rt_stack(fz_se, flags);
 	for (; fz_se; fz_se = NULL)
@@ -74,7 +74,7 @@ static void enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigned 
 
 static void dequeue_fz_entity(struct sched_freezer_entity *fz_se, unsigned int flags)
 {
-	// struct rq *rq = rq_of_rt_se(rt_se);
+	struct rq *rq = rq_of_fz_se(fz_se);
 
 	// dequeue_rt_stack(rt_se, flags);
 
@@ -140,7 +140,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  static void update_curr_freezer(struct rq *rq)
  {
  	struct task_struct *curr = rq->curr;
- 	struct sched_freezer_entity *fz_se = &curr->fz;
+ 	// struct sched_freezer_entity *fz_se = &curr->fz;
  	u64 delta_exec;
  	u64 now;
 
