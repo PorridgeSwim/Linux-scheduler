@@ -3090,6 +3090,12 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
 	p->rt.on_rq		= 0;
 	p->rt.on_list		= 0;
 
+	INIT_LIST_HEAD(&p->fz.run_list);
+	p->fz.timeout		= 0;
+	p->fz.time_slice	= FREEZER_TIMESLICE;
+	p->fz.on_rq		= 0;
+	p->fz.on_list		= 0;
+
 #ifdef CONFIG_PREEMPT_NOTIFIERS
 	INIT_HLIST_HEAD(&p->preempt_notifiers);
 #endif
@@ -5189,6 +5195,8 @@ static void __setscheduler(struct rq *rq, struct task_struct *p,
 		p->sched_class = &dl_sched_class;
 	else if (rt_prio(p->prio))
 		p->sched_class = &rt_sched_class;
+	else if (task_has_fz_policy(p)) 
+		p->sched_class = &freezer_sched_class;
 	else
 		p->sched_class = &fair_sched_class;
 }

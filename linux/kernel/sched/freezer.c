@@ -58,7 +58,9 @@ static void __enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigne
 
 	// inc_fz_tasks(fz_se, fz_rq);
 	fz_rq->fz_nr_running += 1;
-	rq->nr_running += 1;
+
+	add_nr_running(rq, 1);
+	// rq->nr_running += 1;
 }
 
 static void enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigned int flags)
@@ -85,7 +87,8 @@ static void dequeue_fz_entity(struct sched_freezer_entity *fz_se, unsigned int f
 			list_del_init(&fz_se->run_list);
 			fz_se->on_list = 0;
 			fz_rq->fz_nr_running -= 1;
-			rq->nr_running -= 1;
+			// rq->nr_running -= 1;
+			sub_nr_running(rq, 1);
 		}
 			// __enqueue_rt_entity(rt_se, flags);
 	}
@@ -117,7 +120,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 	int count = 0;
 	int cur_cpu; 
 
-	for_each_possible_cpu(i) {
+	for_each_cpu(i, p->cpus_ptr) {
 		pr_info("cpu is %d\n",i);
 		if (count == 0) {
 			min = cpu_rq(i)->fz.fz_nr_running;
@@ -168,21 +171,21 @@ balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 
  static void task_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
  {
- 	struct sched_freezer_entity *fz_se = &p->fz;
+	struct sched_freezer_entity *fz_se = &p->fz;
+	pr_info("task_tick");
+	update_curr_freezer(rq);
 
- 	update_curr_freezer(rq);
+	if (--p->fz.time_slice)
+		return;
 
- 	if (--p->fz.time_slice)
- 		return;
+	p->fz.time_slice = sched_freezer_timeslice;
 
- 	p->fz.time_slice = sched_freezer_timeslice;
-
- 	if (fz_se->run_list.prev != fz_se->run_list.next) {
- 		list_move_tail(&fz_se->run_list, &(fz_rq_of_se(fz_se)->fz_list)); //need list_head *
- 		resched_curr(rq);
- 		return;
- 	}
- }
+	if (fz_se->run_list.prev != fz_se->run_list.next) {
+		list_move_tail(&fz_se->run_list, &(fz_rq_of_se(fz_se)->fz_list)); //need list_head *
+		resched_curr(rq);
+		return;
+	}
+}
 
  void init_fz_rq(struct freezer_rq *fz_rq)
  {
