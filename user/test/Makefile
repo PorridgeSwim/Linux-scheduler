@@ -1,2 +1,9 @@
-all:set-freezer.c
-	make -c set-freezer.c -o set-freezer
+all: set-freezer
+
+set-freezer: set-freezer.c
+	gcc -o set-freezer set-freezer.c
+
+clean:
+	rm -rf set-freezer
+
+.PHONY: $(PHONY)
