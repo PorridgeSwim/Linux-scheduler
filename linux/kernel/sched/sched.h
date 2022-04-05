@@ -33,6 +33,7 @@
 #include <linux/sched/user.h>
 #include <linux/sched/wake_q.h>
 #include <linux/sched/xacct.h>
+#include <linux/sched/freezer.h> //aoxue 04.04
 
 #include <uapi/linux/sched/types.h>
 
@@ -163,6 +164,12 @@ static inline int idle_policy(int policy)
 {
 	return policy == SCHED_IDLE;
 }
+
+static inline int fz_policy(int policy)
+{
+	return policy == SCHED_FREEZER;
+}
+
 static inline int fair_policy(int policy)
 {
 	return policy == SCHED_NORMAL || policy == SCHED_BATCH;
@@ -180,7 +187,7 @@ static inline int dl_policy(int policy)
 static inline bool valid_policy(int policy)
 {
 	return idle_policy(policy) || fair_policy(policy) ||
-		rt_policy(policy) || dl_policy(policy);
+		rt_policy(policy) || dl_policy(policy) || fz_policy(policy);//aoxue 0404
 }
 
 static inline int task_has_idle_policy(struct task_struct *p)
@@ -196,6 +203,11 @@ static inline int task_has_rt_policy(struct task_struct *p)
 static inline int task_has_dl_policy(struct task_struct *p)
 {
 	return dl_policy(p->policy);
+}
+
+static inline int task_has_fz_policy(struct task_struct *p)
+{
+	return fz_policy(p->policy);
 }
 
 #define cap_scale(v, s) ((v)*(s) >> SCHED_CAPACITY_SHIFT)
@@ -518,9 +530,13 @@ struct cfs_bandwidth { };
 
 #endif	/* CONFIG_CGROUP_SCHED */
 
-struct freezer_rq{
-	struct list_head	fz_list;  // freezer run queue head
-	unsigned int		fz_nr_running;
+
+struct freezer_rq {
+	unsigned int		fz_nr_running; //number of running
+	struct list_head	fz_list;
+#ifdef CONFIG_SMP //if SMP, need load tracking
+#endif
+
 }; //aoxue 4/3
 
 /* CFS-related fields in a runqueue */

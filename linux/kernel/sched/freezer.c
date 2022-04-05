@@ -4,6 +4,22 @@
 
 int sched_freezer_timeslice = FREEZER_TIMESLICE;
 
+const struct sched_class freezer_sched_class;
+
+/*
+ * Change rt_se->run_list location unless SAVE && !MOVE
+ *
+ * assumes ENQUEUE/DEQUEUE flags match
+ */
+static inline bool move_entity(unsigned int flags)
+{
+	if ((flags & (DEQUEUE_SAVE | DEQUEUE_MOVE)) == DEQUEUE_SAVE)
+		return false;
+
+	return true;
+}
+
+
 static inline struct task_struct *fz_task_of(struct sched_freezer_entity *fz_se)
 {
 	return container_of(fz_se, struct task_struct, fz);
@@ -26,7 +42,8 @@ static inline struct freezer_rq *fz_rq_of_se(struct sched_freezer_entity *fz_se)
 static void __enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigned int flags)
 {
 	struct freezer_rq *fz_rq = fz_rq_of_se(fz_se);
-	struct list_head *queue = fz_rq->fz_list;
+	struct list_head *queue = &(fz_rq->fz_list);
+
 
 	if (move_entity(flags)) {
 		WARN_ON_ONCE(fz_se->on_list);
@@ -99,11 +116,11 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 
  	for_each_possible_cpu(i) {
  		if (count == 0) {
- 			min = cpu_rq(i)->fz->fz_nr_running;
+ 			min = cpu_rq(i)->fz.fz_nr_running;
  			cur_cpu = i;
  			count = 1;
  		} else{
- 			tmp = cpu_rq(i)->fz->fz_nr_running;
+ 			tmp = cpu_rq(i)->fz.fz_nr_running;
  			if (min > tmp) {
  				min = tmp;
  				cur_cpu = i;
@@ -112,24 +129,6 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  	}
 
  	return cur_cpu;
- }
-
- static void task_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
- {
- 	struct sched_freezer_entity *fz_se = &p->fz;
-
- 	update_curr_fz(rq);
-
- 	if (--p->fz.time_slice)
- 		return;
-
- 	p->fz.time_slice = sched_freezer_timeslice;
-
- 	if (fz_se->run_list.prev != fz_se->run_list.next) {
- 		list_move_tail(&fz_se->run_list, fz_rq_of_se(fz_se));
- 		resched_curr(rq);
- 		return;
- 	}
  }
 
  /*
@@ -156,13 +155,32 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 
  }
 
+ static void task_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
+ {
+ 	struct sched_freezer_entity *fz_se = &p->fz;
+
+ 	update_curr_freezer(rq);
+
+ 	if (--p->fz.time_slice)
+ 		return;
+
+ 	p->fz.time_slice = sched_freezer_timeslice;
+
+ 	if (fz_se->run_list.prev != fz_se->run_list.next) {
+ 		list_move_tail(&fz_se->run_list, &(fz_rq_of_se(fz_se)->fz_list)); //need list_head *
+ 		resched_curr(rq);
+ 		return;
+ 	}
+ }
+
  void init_fz_rq(struct freezer_rq *fz_rq)
  {
- 	INIT_LIST_HEAD(fz_rq->fz_list);
+ 	INIT_LIST_HEAD(&(fz_rq->fz_list));
  	fz_rq->fz_nr_running = 0;
  }
 
-static struct sched_rt_entity *pick_next_fz_entity(struct rq *rq,
+static struct sched_freezer_entity *pick_next_fz_entity(struct rq *rq,
+
 						   struct freezer_rq *fz_rq)
 {
 	struct sched_freezer_entity *next = NULL;
@@ -177,7 +195,8 @@ static struct sched_rt_entity *pick_next_fz_entity(struct rq *rq,
 static struct task_struct *_pick_next_task_fz(struct rq *rq)
 {
 	struct sched_freezer_entity *fz_se;
-	struct fz_rq *fz_rq  = &rq->fz;
+	struct freezer_rq *fz_rq  = &rq->fz;
+
 
 	do {
 		fz_se = pick_next_fz_entity(rq, fz_rq);

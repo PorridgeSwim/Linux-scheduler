@@ -500,7 +500,8 @@ struct sched_freezer_entity {
 	unsigned int			time_slice;
 	unsigned short			on_rq;
 	unsigned short			on_list;
-}; //added by aoxue 4/3
+};//added by aoxue 4/3
+
 
 struct sched_rt_entity {
 	struct list_head		run_list;
@@ -707,6 +708,7 @@ struct task_struct {
 	const struct sched_class	*sched_class;
 	struct sched_entity		se;
 	struct sched_rt_entity		rt;
+	struct sched_freezer_entity	fz;
 #ifdef CONFIG_CGROUP_SCHED
 	struct task_group		*sched_task_group;
 #endif
