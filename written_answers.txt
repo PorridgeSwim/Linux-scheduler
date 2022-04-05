@@ -111,7 +111,11 @@ Describe how you created the 70%/30% split.
 	- Indicate if you needed root privileges for any of those commands
 	- How were the results different from P1Q1, if at all.
 
-	/* TODO */
+We asked TA Kevin. And he told us that all we need to do is repeating what we
+did in part1, do not necessary to achieve 7/3 split. Hence, our command line
+is the same as part1. No root privilege needed. The difference from part1 is
+that the ratio is about 9.3/4.2, and the sum of them is about 70% rather than
+100%.
 
 =================================== P3Q1 end ===================================
 
@@ -121,7 +125,10 @@ Describe how you created a real-time priority task.
 	- Indicate if you needed root privileges for any of those commands
 	- How were the results different from P1Q2, if at all.
 
-	/* TODO */
+As above, we did the same thing as part1. Root privilege is needed for the
+program that set real time priority. All other 10 process still occupy nearly np cpu.
+The only difference is that the real time process occupy about 70% of cpu
+instead of 100%.
 
 =================================== P3Q2 end ===================================
 
@@ -129,7 +136,9 @@ Describe how you created a real-time priority task.
 MuQSS features unprivileged real-time tasks. Perform the previous task with and
 without root privileges, and describe the differences. 
 
-	/* TODO */
+Without root privilege, the real time process still occupy most cpu, but it
+only occupy 40%-60%. And the process with nice value 16 occupy about 1.7% cpu,
+the process with nice value 12 occupy about 3.4%cpu.
 
 =================================== P3Q3 end ===================================
 
