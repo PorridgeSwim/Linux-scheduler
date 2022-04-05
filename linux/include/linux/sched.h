@@ -502,6 +502,7 @@ struct sched_freezer_entity {
 	unsigned short			on_list;
 };//added by aoxue 4/3
 
+
 struct sched_rt_entity {
 	struct list_head		run_list;
 	unsigned long			timeout;
@@ -712,6 +713,7 @@ struct task_struct {
 	struct task_group		*sched_task_group;
 #endif
 	struct sched_dl_entity		dl;
+	struct sched_freezer_entity	fz;
 
 #ifdef CONFIG_UCLAMP_TASK
 	/*

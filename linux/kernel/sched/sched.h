@@ -11,6 +11,7 @@
 #include <linux/sched/cputime.h>
 #include <linux/sched/deadline.h>
 #include <linux/sched/debug.h>
+#include <linux/sched/freezer.h>
 #include <linux/sched/hotplug.h>
 #include <linux/sched/idle.h>
 #include <linux/sched/init.h>
@@ -529,11 +530,13 @@ struct cfs_bandwidth { };
 
 #endif	/* CONFIG_CGROUP_SCHED */
 
+
 struct freezer_rq {
 	unsigned int		fz_nr_running; //number of running
 	struct list_head	fz_list;
 #ifdef CONFIG_SMP //if SMP, need load tracking
 #endif
+
 }; //aoxue 4/3
 
 /* CFS-related fields in a runqueue */
