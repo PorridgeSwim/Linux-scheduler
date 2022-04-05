@@ -130,6 +130,7 @@
 	__begin_sched_classes = .;		\
 	*(__idle_sched_class)			\
 	*(__fair_sched_class)			\
+	*(__freezer_sched_class)		\
 	*(__rt_sched_class)			\
 	*(__dl_sched_class)			\
 	*(__stop_sched_class)			\
