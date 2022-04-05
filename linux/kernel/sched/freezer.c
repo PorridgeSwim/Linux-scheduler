@@ -43,7 +43,7 @@ static void __enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigne
 {
 	struct freezer_rq *fz_rq = fz_rq_of_se(fz_se);
 	struct list_head *queue = &(fz_rq->fz_list);
-
+	struct rq *rq = rq_of_fz_se(fz_se);
 
 	if (move_entity(flags)) {
 		WARN_ON_ONCE(fz_se->on_list);
@@ -58,12 +58,13 @@ static void __enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigne
 
 	// inc_fz_tasks(fz_se, fz_rq);
 	fz_rq->fz_nr_running += 1;
+	rq->nr_running += 1;
 }
 
 static void enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigned int flags)
 {
 	// get the runqueue of a task
-	// struct rq *rq = rq_of_fz_se(fz_se);
+	struct rq *rq = rq_of_fz_se(fz_se);
 
 	// dequeue_rt_stack(fz_se, flags);
 	for (; fz_se; fz_se = NULL)
@@ -83,7 +84,8 @@ static void dequeue_fz_entity(struct sched_freezer_entity *fz_se, unsigned int f
 		if (fz_rq && fz_rq->fz_nr_running) {
 			list_del_init(&fz_se->run_list);
 			fz_se->on_list = 0;
-			--fz_rq->fz_nr_running;
+			fz_rq->fz_nr_running -= 1;
+			rq->nr_running -= 1;
 		}
 			// __enqueue_rt_entity(rt_se, flags);
 	}
