@@ -108,30 +108,38 @@ static void dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags
 	dequeue_fz_entity(fz_se, flags);
 }
 
+#ifdef CONFIG_SMP
 static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, int flags)
- {
- 	int i;
- 	unsigned int tmp;
- 	unsigned int min;
- 	int count = 0;
- 	int cur_cpu; 
+{
+	int i;
+	unsigned int tmp;
+	unsigned int min;
+	int count = 0;
+	int cur_cpu; 
 
- 	for_each_possible_cpu(i) {
- 		if (count == 0) {
- 			min = cpu_rq(i)->fz.fz_nr_running;
- 			cur_cpu = i;
- 			count = 1;
- 		} else{
- 			tmp = cpu_rq(i)->fz.fz_nr_running;
- 			if (min > tmp) {
- 				min = tmp;
- 				cur_cpu = i;
- 			}
- 		}
- 	}
+	for_each_possible_cpu(i) {
+		if (count == 0) {
+			min = cpu_rq(i)->fz.fz_nr_running;
+			cur_cpu = i;
+			count = 1;
+		} else{
+			tmp = cpu_rq(i)->fz.fz_nr_running;
+			if (min > tmp) {
+				min = tmp;
+				cur_cpu = i;
+			}
+		}
+	}
 
- 	return cur_cpu;
- }
+	return cur_cpu;
+}
+
+static int
+balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	return WARN_ON_ONCE(1);
+}
+ #endif
 
  /*
   * Update the current task's runtime statistics. Skip current tasks that
@@ -221,20 +229,58 @@ static struct task_struct *pick_next_task_freezer(struct rq *rq)
 	return p;
 }
 
+static void yield_task_freezer(struct rq *rq)
+{
+}
+
+static void check_preempt_curr_freezer(struct rq *rq, struct task_struct *p, int flags)
+{
+}
+
+static void put_prev_task_freezer(struct rq *rq, struct task_struct *prev)
+{
+}
+
+static void set_next_task_freezer(struct rq *rq, struct task_struct *next, bool first)
+{
+}
+
+static void
+prio_changed_freezer(struct rq *rq, struct task_struct *p, int oldprio)
+{
+}
+
+static void switched_to_freezer(struct rq *rq, struct task_struct *p)
+{
+}
+
+
+
+
 const struct sched_class freezer_sched_class
 	__section("__freezer_sched_class") = {
 	/* no enqueue/yield_task for idle tasks */
 
 	.enqueue_task		= enqueue_task_freezer,
 	.dequeue_task		= dequeue_task_freezer,
+	.yield_task		= yield_task_freezer,
+
+	.check_preempt_curr	= check_preempt_curr_freezer,
 
 	.pick_next_task		= pick_next_task_freezer,
+	.put_prev_task		= put_prev_task_freezer,
+	.set_next_task          = set_next_task_freezer,
 
 #ifdef CONFIG_SMP
+	.balance		= balance_freezer,
 	.select_task_rq		= select_task_rq_freezer,
+	.set_cpus_allowed	= set_cpus_allowed_common,
 #endif
 
 	.task_tick		= task_tick_freezer,
+
+	.prio_changed		= prio_changed_freezer,
+	.switched_to		= switched_to_freezer,
 	.update_curr		= update_curr_freezer,
 #ifdef CONFIG_SMP
 #endif
