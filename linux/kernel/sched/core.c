@@ -3258,6 +3258,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
 		p->sched_reset_on_fork = 0;
 	}
 
+	pr_info("3261 in core\n");
 	if (dl_prio(p->prio))
 		return -EAGAIN;
 	else if (rt_prio(p->prio))
@@ -3267,6 +3268,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
 	else
 		p->sched_class = &fair_sched_class;
 
+	pr_info("3271 in core\n");
 	init_entity_runnable_average(&p->se);
 
 	/*
@@ -3299,6 +3301,7 @@ int sched_fork(unsigned long clone_flags, struct task_struct *p)
 	plist_node_init(&p->pushable_tasks, MAX_PRIO);
 	RB_CLEAR_NODE(&p->pushable_dl_tasks);
 #endif
+	pr_info("3304 in core\n");
 	return 0;
 }
 
@@ -5185,12 +5188,16 @@ static void __setscheduler(struct rq *rq, struct task_struct *p,
 	if (keep_boost)
 		p->prio = rt_effective_prio(p, p->prio);
 
+	pr_info("5190 in core\n");
 	if (dl_prio(p->prio))
 		p->sched_class = &dl_sched_class;
 	else if (rt_prio(p->prio))
 		p->sched_class = &rt_sched_class;
+	else if (task_has_fz_policy(p))
+		p->sched_class = &freezer_sched_class;
 	else
 		p->sched_class = &fair_sched_class;
+	pr_info("5199 in core\n");
 }
 
 /*
@@ -5223,6 +5230,7 @@ static int __sched_setscheduler(struct task_struct *p,
 	int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
 	struct rq *rq;
 
+	pr_info("5233 in core\n");
 	/* The pi code expects interrupts enabled */
 	BUG_ON(pi && in_interrupt());
 recheck:
@@ -5600,6 +5608,7 @@ do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
 	struct task_struct *p;
 	int retval;
 
+	pr_info("5611 in core\n");
 	if (!param || pid < 0)
 		return -EINVAL;
 	if (copy_from_user(&lparam, param, sizeof(struct sched_param)))
@@ -5819,6 +5828,7 @@ sched_attr_copy_to_user(struct sched_attr __user *uattr,
 {
 	unsigned int ksize = sizeof(*kattr);
 
+	pr_info("5831 in core\n");
 	if (!access_ok(uattr, usize))
 		return -EFAULT;
 
@@ -6317,6 +6327,7 @@ SYSCALL_DEFINE1(sched_get_priority_max, int, policy)
 {
 	int ret = -EINVAL;
 
+	pr_info("6322 in core\n");
 	switch (policy) {
 	case SCHED_FIFO:
 	case SCHED_RR:
@@ -6437,6 +6448,7 @@ void sched_show_task(struct task_struct *p)
 	unsigned long free = 0;
 	int ppid;
 
+	pr_info("6451 on core\n");
 	if (!try_get_task_stack(p))
 		return;
 
@@ -7070,6 +7082,7 @@ void __init sched_init(void)
 	int i;
 
 	/* Make sure the linker didn't screw up */
+	pr_info("7074 in core\n");
 	BUG_ON(&idle_sched_class + 1 != &fair_sched_class ||
 		   &fair_sched_class + 1 != &freezer_sched_class||
 	       &freezer_sched_class + 1 != &rt_sched_class ||
@@ -7147,6 +7160,7 @@ void __init sched_init(void)
 		rq->calc_load_active = 0;
 		rq->calc_load_update = jiffies + LOAD_FREQ;
 		init_cfs_rq(&rq->cfs);
+		pr_info("7150 in core\n");
 		init_fz_rq(&rq->fz);
 		init_rt_rq(&rq->rt);
 		init_dl_rq(&rq->dl);
@@ -7237,6 +7251,7 @@ void __init sched_init(void)
 	init_uclamp();
 
 	scheduler_running = 1;
+	pr_info("7245 in core\n");
 }
 
 #ifdef CONFIG_DEBUG_ATOMIC_SLEEP

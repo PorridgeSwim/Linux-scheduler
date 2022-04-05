@@ -97,7 +97,9 @@ enqueue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
 {
 	struct sched_freezer_entity *fz_se = &p->fz;
 
+	pr_info("enqueue begin\n");
 	enqueue_freezer_entity(fz_se, flags);
+	pr_info("enque end\n");
 }
 
 static void dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
@@ -105,7 +107,9 @@ static void dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags
 	// get freezer entity
 	struct sched_freezer_entity *fz_se = &p->fz;
 
+	pr_info("dequeue begin\n");
 	dequeue_fz_entity(fz_se, flags);
+	pr_info("DEQUEU end\n");
 }
 
 static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, int flags)
@@ -116,6 +120,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  	int count = 0;
  	int cur_cpu; 
 
+	pr_info("select begin\n");
  	for_each_possible_cpu(i) {
  		if (count == 0) {
  			min = cpu_rq(i)->fz.fz_nr_running;
@@ -130,6 +135,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  		}
  	}
 
+	pr_info("select end\n");
  	return cur_cpu;
  }
 
@@ -144,6 +150,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  	u64 delta_exec;
  	u64 now;
 
+	pr_info("update begin\n");
  	if (curr->sched_class != &freezer_sched_class)
  		return;
 
@@ -154,6 +161,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 
  	schedstat_set(curr->se.statistics.exec_max,
  		      max(curr->se.statistics.exec_max, delta_exec));
+	pr_info("update end\n");
 
  }
 
@@ -161,6 +169,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  {
  	struct sched_freezer_entity *fz_se = &p->fz;
 
+	pr_info("tick start\n");
  	update_curr_freezer(rq);
 
  	if (--p->fz.time_slice)
@@ -171,8 +180,10 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  	if (fz_se->run_list.prev != fz_se->run_list.next) {
  		list_move_tail(&fz_se->run_list, &(fz_rq_of_se(fz_se)->fz_list)); //need list_head *
  		resched_curr(rq);
+		pr_info("tick end\n");
  		return;
  	}
+	pr_info("tick end\n");
  }
 
  void init_fz_rq(struct freezer_rq *fz_rq)
@@ -213,11 +224,13 @@ static struct task_struct *pick_next_task_freezer(struct rq *rq)
 {
 	struct task_struct *p;
 
+	pr_info("pick start\n");
 	if (!sched_freezer_runnable(rq))
 		return NULL;
 
 	p = _pick_next_task_fz(rq);
 	// set_next_task_freezer(rq, p, true);
+	pr_info("pick end\n");
 	return p;
 }
 
