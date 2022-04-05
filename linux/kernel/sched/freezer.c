@@ -3,6 +3,7 @@
 #include <trace/events/power.h>
 
 int sched_freezer_timeslice = FREEZER_TIMESLICE;
+
 const struct sched_class freezer_sched_class;
 
 /*
@@ -17,6 +18,7 @@ static inline bool move_entity(unsigned int flags)
 
 	return true;
 }
+
 
 static inline struct task_struct *fz_task_of(struct sched_freezer_entity *fz_se)
 {
@@ -41,6 +43,7 @@ static void __enqueue_freezer_entity(struct sched_freezer_entity *fz_se, unsigne
 {
 	struct freezer_rq *fz_rq = fz_rq_of_se(fz_se);
 	struct list_head *queue = &(fz_rq->fz_list);
+
 
 	if (move_entity(flags)) {
 		WARN_ON_ONCE(fz_se->on_list);
@@ -177,6 +180,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
  }
 
 static struct sched_freezer_entity *pick_next_fz_entity(struct rq *rq,
+
 						   struct freezer_rq *fz_rq)
 {
 	struct sched_freezer_entity *next = NULL;
@@ -192,6 +196,7 @@ static struct task_struct *_pick_next_task_fz(struct rq *rq)
 {
 	struct sched_freezer_entity *fz_se;
 	struct freezer_rq *fz_rq  = &rq->fz;
+
 
 	do {
 		fz_se = pick_next_fz_entity(rq, fz_rq);
