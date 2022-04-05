@@ -229,12 +229,14 @@ static struct task_struct *pick_next_task_freezer(struct rq *rq)
 	return p;
 }
 
+
 static void yield_task_freezer(struct rq *rq)
 {
 }
 
 static void check_preempt_curr_freezer(struct rq *rq, struct task_struct *p, int flags)
 {
+
 }
 
 static void put_prev_task_freezer(struct rq *rq, struct task_struct *prev)
@@ -245,16 +247,16 @@ static void set_next_task_freezer(struct rq *rq, struct task_struct *next, bool 
 {
 }
 
+
 static void
 prio_changed_freezer(struct rq *rq, struct task_struct *p, int oldprio)
 {
+
 }
 
 static void switched_to_freezer(struct rq *rq, struct task_struct *p)
 {
 }
-
-
 
 
 const struct sched_class freezer_sched_class
@@ -267,11 +269,14 @@ const struct sched_class freezer_sched_class
 
 	.check_preempt_curr	= check_preempt_curr_freezer,
 
+	.check_preempt_curr	= check_preempt_curr_freezer,
+	.put_prev_task		= put_prev_task_freezer,
 	.pick_next_task		= pick_next_task_freezer,
 	.put_prev_task		= put_prev_task_freezer,
 	.set_next_task          = set_next_task_freezer,
 
 #ifdef CONFIG_SMP
+
 	.balance		= balance_freezer,
 	.select_task_rq		= select_task_rq_freezer,
 	.set_cpus_allowed	= set_cpus_allowed_common,
@@ -282,6 +287,8 @@ const struct sched_class freezer_sched_class
 	.prio_changed		= prio_changed_freezer,
 	.switched_to		= switched_to_freezer,
 	.update_curr		= update_curr_freezer,
+	.prio_changed	= prio_changed_freezer,
+	.update_curr	= update_curr_freezer,
 #ifdef CONFIG_SMP
 #endif
 };
