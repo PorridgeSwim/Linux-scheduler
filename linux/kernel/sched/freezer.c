@@ -221,6 +221,29 @@ static struct task_struct *pick_next_task_freezer(struct rq *rq)
 	return p;
 }
 
+static void check_preempt_curr_freezer(struct rq *rq, struct task_struct *p, int flags)
+{
+	resched_curr(rq);
+}
+
+static void put_prev_task_freezer(struct rq *rq, struct task_struct *prev)
+{
+}
+
+#ifdef CONFIG_SMP
+static int
+balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	return WARN_ON_ONCE(1);
+}
+#endif
+
+static void
+prio_changed_freezer(struct rq *rq, struct task_struct *p, int oldprio)
+{
+	BUG();
+}
+
 const struct sched_class freezer_sched_class
 	__section("__freezer_sched_class") = {
 	/* no enqueue/yield_task for idle tasks */
@@ -228,14 +251,20 @@ const struct sched_class freezer_sched_class
 	.enqueue_task		= enqueue_task_freezer,
 	.dequeue_task		= dequeue_task_freezer,
 
+	.check_preempt_curr	= check_preempt_curr_freezer,
+	.put_prev_task		= put_prev_task_freezer,
 	.pick_next_task		= pick_next_task_freezer,
 
 #ifdef CONFIG_SMP
+	.balance			= balance_freezer,
 	.select_task_rq		= select_task_rq_freezer,
+	.set_cpus_allowed	= set_cpus_allowed_common,
 #endif
 
 	.task_tick		= task_tick_freezer,
 	.update_curr		= update_curr_freezer,
+	.prio_changed	= prio_changed_freezer,
+	.update_curr	= update_curr_freezer,
 #ifdef CONFIG_SMP
 #endif
 };
