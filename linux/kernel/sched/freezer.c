@@ -118,6 +118,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 	int cur_cpu; 
 
 	for_each_possible_cpu(i) {
+		pr_info("cpu is %d\n",i);
 		if (count == 0) {
 			min = cpu_rq(i)->fz.fz_nr_running;
 			cur_cpu = i;
@@ -130,7 +131,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 			}
 		}
 	}
-
+	pr_info("cur_cpu %d\n",cur_cpu);
 	return cur_cpu;
 }
 
