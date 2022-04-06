@@ -97,6 +97,7 @@ enqueue_task_freezer(struct rq *rq, struct task_struct *p, int flags)
 {
 	struct sched_freezer_entity *fz_se = &p->fz;
 
+	pr_info("enqueue task freezer");
 	enqueue_freezer_entity(fz_se, flags);
 }
 
@@ -104,7 +105,7 @@ static void dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags
 {
 	// get freezer entity
 	struct sched_freezer_entity *fz_se = &p->fz;
-
+	pr_info("dequeue task freezer");
 	dequeue_fz_entity(fz_se, flags);
 }
 
@@ -170,6 +171,7 @@ balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
  {
  	struct sched_freezer_entity *fz_se = &p->fz;
 
+	pr_info("task tick freezer");
  	update_curr_freezer(rq);
 
  	if (--p->fz.time_slice)
