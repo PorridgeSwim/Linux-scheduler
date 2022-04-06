@@ -214,7 +214,8 @@ Disadvantage:more time on time interrupt handler, quicker to overflow.
 ================================== P5Q2 start ==================================
 What is the HZ currently configured for your running Linux system?
 
-250. We find it in /linux/include/asm-generic/param.h
+250. We find it by "grep 'CONFIG_HZ=' /boot/config-$(uname -r)"
+(100 was found in /linux/include/asm-generic/param.h but wasn't used)
 
 =================================== P5Q2 end ===================================
 
