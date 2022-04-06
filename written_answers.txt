@@ -1,5 +1,4 @@
-
-﻿Answers for parts  1 - 5
+Answers for parts  1 - 5
 Enter your answers in the designated location. Do NOT remove lines that start
 with '=' signs. Removing these lines will break our grading scrips and will
 result in 0 points. Also, keep lines to a max of 80 chars long (you do not
