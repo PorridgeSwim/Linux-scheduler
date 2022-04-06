@@ -23,3 +23,5 @@ Part7:
  7 #7    1 40.3 40    2658 debbie        \_ python test.py
  7 #7    1 40.3 40    2659 debbie        \_ python test.py
 
+We copied lots of code, deleted lots of code, add some codes. It can works at the end, but we still are not so
+clear how it works.
