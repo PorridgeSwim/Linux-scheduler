@@ -6,6 +6,8 @@ int sched_freezer_timeslice = FREEZER_TIMESLICE;
 
 const struct sched_class freezer_sched_class;
 
+static void update_curr_freezer(struct rq *rq);
+
 /*
  * Change rt_se->run_list location unless SAVE && !MOVE
  *
@@ -109,6 +111,7 @@ static void dequeue_task_freezer(struct rq *rq, struct task_struct *p, int flags
 	// get freezer entity
 	struct sched_freezer_entity *fz_se = &p->fz;
 
+	update_curr_freezer(rq);
 	dequeue_fz_entity(fz_se, flags);
 }
 
@@ -143,7 +146,7 @@ balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 {
 	return WARN_ON_ONCE(1);
 }
- #endif
+#endif
 
  /*
   * Update the current task's runtime statistics. Skip current tasks that
@@ -166,6 +169,12 @@ static void update_curr_freezer(struct rq *rq)
 
 	schedstat_set(curr->se.statistics.exec_max,
 				max(curr->se.statistics.exec_max, delta_exec));
+
+	curr->se.sum_exec_runtime += delta_exec;
+	account_group_exec_runtime(curr, delta_exec);
+
+	curr->se.exec_start = now;
+	cgroup_account_cputime(curr, delta_exec);
 }
 
 static void task_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
@@ -228,6 +237,7 @@ static struct task_struct *pick_next_task_freezer(struct rq *rq)
 
 	p = _pick_next_task_fz(rq);
 	// set_next_task_freezer(rq, p, true);
+	p->se.exec_start = rq_clock_task(rq);
 	return p;
 }
 
@@ -245,6 +255,7 @@ static void check_preempt_curr_freezer(struct rq *rq, struct task_struct *p, int
 
 static void put_prev_task_freezer(struct rq *rq, struct task_struct *prev)
 {
+	update_curr_freezer(rq);
 }
 
 static void set_next_task_freezer(struct rq *rq, struct task_struct *next, bool first)
