@@ -9,8 +9,8 @@ your answers to about 40 words.
 Describe how you created the 70%/30% split. 
 
 We find that when nice = 16, the weight is 29. And when nice = 12, weight is 70.
-And 29/70 is close to 30/70. Then we design a program myprogram where we fork 
-5 times, and we use while(1) to make it run forever. By using the terminal 
+And 29/70 is close to 30/70. Then we design a program myprogram where we fork
+5 times, and we use while(1) to make it run forever. By using the terminal
 command, we run the myprogram twice with different nice value.
 
 	- Include the command lines you executed
@@ -48,7 +48,7 @@ No command need root privilege
 ================================== P1Q2 start ==================================
 Describe how you created a real-time priority task.
 
-We create a new program myprogram2. The only change we made from myprogram is 
+We create a new program myprogram2. The only change we made from myprogram is
 that we fork one more time in myprogram2 and set the new process to be real time
 by sched_setscheduler().
 
@@ -126,8 +126,8 @@ Describe how you created a real-time priority task.
 	- How were the results different from P1Q2, if at all.
 
 As above, we did the same thing as part1. Root privilege is needed for the
-program that set real time priority. All other 10 process still occupy nearly 
-no cpu. The only difference is that the real time process occupy about 70% of 
+program that set real time priority. All other 10 process still occupy nearly
+no cpu. The only difference is that the real time process occupy about 70% of
 cpu instead of 100%.
 
 =================================== P3Q2 end ===================================
@@ -167,7 +167,7 @@ Design an experiment that you think will highlight MuQSS’s strength. Perform
 the experiment and report your findings.
 
 We compress the hw5 directory (1.1GB) to test the speed of two kernels, and the
-final hw5.zip file is 429MB. We found that both kernel use almost same real 
+final hw5.zip file is 429MB. We found that both kernel use almost same real
 time to compress the hw5. But muqss kernel used more time on user and less time
 on system than the origin kernel.
 
