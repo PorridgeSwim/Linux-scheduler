@@ -126,9 +126,9 @@ Describe how you created a real-time priority task.
 	- How were the results different from P1Q2, if at all.
 
 As above, we did the same thing as part1. Root privilege is needed for the
-program that set real time priority. All other 10 process still occupy nearly np cpu.
-The only difference is that the real time process occupy about 70% of cpu
-instead of 100%.
+program that set real time priority. All other 10 process still occupy nearly 
+no cpu. The only difference is that the real time process occupy about 70% of 
+cpu instead of 100%.
 
 =================================== P3Q2 end ===================================
 
