@@ -11,6 +11,7 @@ We added freezer's .c file as
 kernel/sched/freezer.c
 We also edited makefile to compile this
 user/test/Makefile
+We used Use the ps command before and after this part, to verify that our addition to the kernel had no effect.
 
 Part7:
  SCH POL PSR %CPU  C     PID USER     CMD
