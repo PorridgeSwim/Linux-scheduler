@@ -1,4 +1,5 @@
 -You Zhou yz3883, Aoxue Wei aw3389, Panyu Gao pg2676
--HW6 part3
+-HW6 part4
 
--We used the same tests as part1. The result is included in written_answers.txt
+-We ran some tests to compare.
+The result is included in written_answers.txt
