@@ -7,7 +7,7 @@ linux/include/asm-generic/vmlinux.lds.h
 linux/include/linux/sched.h
 linux/kernel/sched/core.c
 linux/kernel/sched/sched.h
-We added freezer's .c file to 
+We added freezer's .c file as
 kernel/sched/freezer.c
 We also edited makefile to compile this
 user/test/Makefile
