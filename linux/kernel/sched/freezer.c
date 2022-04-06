@@ -86,6 +86,7 @@ static void dequeue_fz_entity(struct sched_freezer_entity *fz_se, unsigned int f
 		if (fz_rq && fz_rq->fz_nr_running) {
 			list_del_init(&fz_se->run_list);
 			fz_se->on_list = 0;
+			fz_se->on_rq = 0;
 			fz_rq->fz_nr_running -= 1;
 			// rq->nr_running -= 1;
 			sub_nr_running(rq, 1);
@@ -118,15 +119,14 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 	unsigned int tmp;
 	unsigned int min;
 	int count = 0;
-	int cur_cpu; 
+	int cur_cpu;
 
 	for_each_cpu(i, p->cpus_ptr) {
-		pr_info("cpu is %d\n",i);
 		if (count == 0) {
 			min = cpu_rq(i)->fz.fz_nr_running;
 			cur_cpu = i;
 			count = 1;
-		} else{
+		} else {
 			tmp = cpu_rq(i)->fz.fz_nr_running;
 			if (min > tmp) {
 				min = tmp;
@@ -134,7 +134,7 @@ static int select_task_rq_freezer(struct task_struct *p, int cpu, int sd_flag, i
 			}
 		}
 	}
-	pr_info("cur_cpu %d\n",cur_cpu);
+
 	return cur_cpu;
 }
 
@@ -149,30 +149,29 @@ balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
   * Update the current task's runtime statistics. Skip current tasks that
   * are not in our scheduling class.
   */
- static void update_curr_freezer(struct rq *rq)
- {
- 	struct task_struct *curr = rq->curr;
- 	// struct sched_freezer_entity *fz_se = &curr->fz;
- 	u64 delta_exec;
- 	u64 now;
+static void update_curr_freezer(struct rq *rq)
+{
+	struct task_struct *curr = rq->curr;
+	// struct sched_freezer_entity *fz_se = &curr->fz;
+	u64 delta_exec;
+	u64 now;
 
- 	if (curr->sched_class != &freezer_sched_class)
- 		return;
+	if (curr->sched_class != &freezer_sched_class)
+		return;
 
- 	now = rq_clock_task(rq);
- 	delta_exec = now - curr->se.exec_start;
- 	if (unlikely((s64)delta_exec <= 0))
- 		return;
+	now = rq_clock_task(rq);
+	delta_exec = now - curr->se.exec_start;
+	if (unlikely((s64)delta_exec <= 0))
+		return;
 
- 	schedstat_set(curr->se.statistics.exec_max,
- 		      max(curr->se.statistics.exec_max, delta_exec));
+	schedstat_set(curr->se.statistics.exec_max,
+				max(curr->se.statistics.exec_max, delta_exec));
+}
 
- }
-
- static void task_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
- {
+static void task_tick_freezer(struct rq *rq, struct task_struct *p, int queued)
+{
 	struct sched_freezer_entity *fz_se = &p->fz;
-	pr_info("task_tick");
+
 	update_curr_freezer(rq);
 
 	if (--p->fz.time_slice)
@@ -187,14 +186,13 @@ balance_freezer(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
 	}
 }
 
- void init_fz_rq(struct freezer_rq *fz_rq)
- {
- 	INIT_LIST_HEAD(&(fz_rq->fz_list));
- 	fz_rq->fz_nr_running = 0;
- }
+void init_fz_rq(struct freezer_rq *fz_rq)
+{
+	INIT_LIST_HEAD(&(fz_rq->fz_list));
+	fz_rq->fz_nr_running = 0;
+}
 
 static struct sched_freezer_entity *pick_next_fz_entity(struct rq *rq,
-
 						   struct freezer_rq *fz_rq)
 {
 	struct sched_freezer_entity *next = NULL;
@@ -235,6 +233,10 @@ static struct task_struct *pick_next_task_freezer(struct rq *rq)
 
 static void yield_task_freezer(struct rq *rq)
 {
+	struct sched_freezer_entity *fz_se = &rq->curr->fz;
+
+	if (fz_se->on_rq)
+		list_move_tail(&fz_se->run_list, &(fz_rq_of_se(fz_se)->fz_list));
 }
 
 static void check_preempt_curr_freezer(struct rq *rq, struct task_struct *p, int flags)
@@ -254,10 +256,21 @@ prio_changed_freezer(struct rq *rq, struct task_struct *p, int oldprio)
 {
 }
 
+static void switched_from_freezer(struct rq *rq, struct task_struct *p)
+{
+}
+
 static void switched_to_freezer(struct rq *rq, struct task_struct *p)
 {
 }
 
+static unsigned int get_rr_interval_freezer(struct rq *rq, struct task_struct *task)
+{
+	if (task->policy == SCHED_FREEZER)
+		return sched_freezer_timeslice;
+	else
+		return 0;
+}
 
 
 
@@ -282,8 +295,10 @@ const struct sched_class freezer_sched_class
 #endif
 
 	.task_tick		= task_tick_freezer,
+	.get_rr_interval = get_rr_interval_freezer,
 
 	.prio_changed		= prio_changed_freezer,
+	.switched_from		= switched_from_freezer,
 	.switched_to		= switched_to_freezer,
 	.update_curr		= update_curr_freezer,
 #ifdef CONFIG_SMP

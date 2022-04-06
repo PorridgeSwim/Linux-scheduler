@@ -5195,7 +5195,7 @@ static void __setscheduler(struct rq *rq, struct task_struct *p,
 		p->sched_class = &dl_sched_class;
 	else if (rt_prio(p->prio))
 		p->sched_class = &rt_sched_class;
-	else if (task_has_fz_policy(p)) 
+	else if (task_has_fz_policy(p))
 		p->sched_class = &freezer_sched_class;
 	else
 		p->sched_class = &fair_sched_class;
@@ -5583,13 +5583,6 @@ void sched_set_fifo_low(struct task_struct *p)
 	WARN_ON_ONCE(sched_setscheduler_nocheck(p, SCHED_FIFO, &sp) != 0);
 }
 EXPORT_SYMBOL_GPL(sched_set_fifo_low);
-
-// void sched_set_freezer(struct task_struct *p)
-// {
-// 	// struct sched_param sp = { .sched_priority = 0}; //really?
-// 	WARN_ON_ONCE(sched_setscheduler_nocheck(p, SCHED_FREEZER, &sp) != 0);
-// }
-// EXPORT_SYMBOL_GPL(sched_set_freezer);
 
 void sched_set_normal(struct task_struct *p, int nice)
 {
@@ -7079,9 +7072,9 @@ void __init sched_init(void)
 
 	/* Make sure the linker didn't screw up */
 	BUG_ON(&idle_sched_class + 1 != &fair_sched_class ||
-		   &fair_sched_class + 1 != &freezer_sched_class||
+		   &fair_sched_class + 1 != &freezer_sched_class ||
 	       &freezer_sched_class + 1 != &rt_sched_class ||
-	       &rt_sched_class + 1   != &dl_sched_class );
+	       &rt_sched_class + 1 != &dl_sched_class);
 #ifdef CONFIG_SMP
 	BUG_ON(&dl_sched_class + 1 != &stop_sched_class);
 #endif
