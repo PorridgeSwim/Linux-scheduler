@@ -1,10 +1,15 @@
-This file should contain:
-
--	Your name & UNI (or those of all group members for group assignments)
--	Homework assignment number
+-You Zhou yz3883, Aoxue Wei aw3389, Panyu Gao pg2676
+-HW6
 -	Description for each part
 
-The description should indicate whether your solution for the part is working
-or not. You may also want to include anything else you would like to
-communicate to the grader, such as extra functionality you implemented or how
-you tried to fix your non-working code.
+Part6: We added structures for freezer to the following files:
+linux/include/asm-generic/vmlinux.lds.h
+linux/include/linux/sched.h
+linux/kernel/sched/core.c
+linux/kernel/sched/sched.h
+We added freezer's .c file to 
+kernel/sched/freezer.c
+We also edited makefile to compile this
+user/test/Makefile
+
+Part7:
