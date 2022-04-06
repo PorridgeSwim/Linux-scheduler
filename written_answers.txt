@@ -1,3 +1,4 @@
+
 ﻿Answers for parts  1 - 5
 Enter your answers in the designated location. Do NOT remove lines that start
 with '=' signs. Removing these lines will break our grading scrips and will
@@ -8,10 +9,10 @@ your answers to about 40 words.
 ================================== P1Q1 start ==================================
 Describe how you created the 70%/30% split. 
 
-We find that when nice = 16, the weight is 29. And when nice = 12, weight is 70.
-And 29/70 is close to 30/70. Then we design a program myprogram where we fork
-5 times, and we use while(1) to make it run forever. By using the terminal
-command, we run the myprogram twice with different nice value.
+We find that when nice = 16, the weight is 29. And when nice = 12, weight is 70. And
+29/70 is close to 30/70. Then we design a program myprogram where we fork 5 times, and
+we use while(1) to make it run forever. By using the terminal command, we run the
+myprogram twice with different nice value.
 
 	- Include the command lines you executed
 
@@ -48,9 +49,9 @@ No command need root privilege
 ================================== P1Q2 start ==================================
 Describe how you created a real-time priority task.
 
-We create a new program myprogram2. The only change we made from myprogram is
-that we fork one more time in myprogram2 and set the new process to be real time
-by sched_setscheduler().
+We create a new program myprogram2. The only change we made from myprogram is that
+we fork one more time in myprogram2 and set the new process to be real time by
+sched_setscheduler().
 
 	- Include the command lines you executed
 
@@ -86,12 +87,27 @@ process.
 =================================== P1Q2 end ===================================
 
 
-
 ================================== P2Q1 start ==================================
 The output of diff or diffconfig when comparing the config files for your 
 mainline fallback kernel and your MuQSS kernel
 
-	/* TODO */
+-CFS_BANDWIDTH y
+-CGROUP_CPUACCT y
+-FAIR_GROUP_SCHED y
+-NUMA_BALANCING y
+-NUMA_BALANCING_DEFAULT_ENABLED y
+-RT_GROUP_SCHED n
+-SCHED_AUTOGROUP y
+ LOCALVERSION "-cs4118" -> "-aw3389-muqss"
++RQ_ALL n
++RQ_MC y
++RQ_MC_LLC n
++RQ_NONE n
++RQ_SMP n
++RQ_SMT n
++SCHED_MUQSS y
++SHARERQ 2
++SMT_NICE y
 
 =================================== P2Q1 end ===================================
 
@@ -99,10 +115,23 @@ mainline fallback kernel and your MuQSS kernel
 Indicate you successfully patched, built, and booted into your MuQSS-enabled 
 Linux kernel.
 
-	/* TODO */
+[    0.274397] MuQSS possible/present/online CPUs: 128/2/2
+[    0.274401] MuQSS locality CPU 0 to 0: 0
+[    0.274404] MuQSS locality CPU 0 to 1: 4
+[    0.274408] MuQSS locality CPU 1 to 0: 4
+[    0.274412] MuQSS locality CPU 1 to 1: 0
+[    0.274517] MuQSS CPU 0 llc 0 RQ order 0 RQ 0 llc 0
+[    0.274520] MuQSS CPU 0 llc 0 RQ order 1 RQ 1 llc 2
+[    0.274524] MuQSS CPU 1 llc 2 RQ order 0 RQ 1 llc 2
+[    0.274528] MuQSS CPU 1 llc 2 RQ order 1 RQ 0 llc 0
+[    0.274531] MuQSS CPU 0 llc 0 CPU order 0 RQ 0 llc 0
+[    0.274535] MuQSS CPU 0 llc 0 CPU order 1 RQ 1 llc 2
+[    0.274539] MuQSS CPU 1 llc 2 CPU order 0 RQ 1 llc 2
+[    0.274542] MuQSS CPU 1 llc 2 CPU order 1 RQ 0 llc 0
+[    0.274546] MuQSS runqueue share type MC total runqueues: 2
+[    1.390102] MuQSS CPU scheduler v0.205 by Con Kolivas.
 
 =================================== P2Q2 end ===================================
-
 
 
 ================================== P3Q1 start ==================================
