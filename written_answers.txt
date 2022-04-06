@@ -1,4 +1,4 @@
-﻿Answers for parts  1 - 5
+Answers for parts  1 - 5
 Enter your answers in the designated location. Do NOT remove lines that start
 with '=' signs. Removing these lines will break our grading scrips and will
 result in 0 points. Also, keep lines to a max of 80 chars long (you do not
@@ -140,15 +140,25 @@ Without root privilege, the real time process still occupy most cpu, but it
 only occupy 40%-60%. And the process with nice value 16 occupy about 1.7% cpu,
 the process with nice value 12 occupy about 3.4%cpu.
 
-=================================== P3Q3 end ===================================
-
-
 
 ================================== P4Q1 start ==================================
 Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
 and your MuQSS-patched kernels.
+    
+We run time make -j2 on both kernels, here is our result:
+The Muqss kernel had shorter system time, but longer user time and real time.
 
-	/* TODO */
+On Muqss kernel:
+real time: 11m36s
+user: 21m24s
+sys: 2m17s
+
+On cs-4118 kernel:
+real time: 10m13s
+user: 16m31s
+sys: 2m38s
+
+
 
 =================================== P4Q1 end ===================================
 
@@ -156,7 +166,10 @@ and your MuQSS-patched kernels.
 Design an experiment that you think will highlight MuQSS’s strength. Perform 
 the experiment and report your findings.
 
-	/* TODO */
+We compress the hw5 directory (1.1GB) to test the speed of two kernels, and the
+final hw5.zip file is 429MB. We found that both kernel use almost same real 
+time to compress the hw5. But muqss kernel used more time on user and less time
+on system than the origin kernel.
 
 =================================== P4Q2 end ===================================
 
@@ -165,40 +178,54 @@ the experiment and report your findings.
 ================================== P5Q1 start ==================================
 Briefly describe the advantages and disadvantages of a larger HZ.
 
-	/* TODO */
+Advantages:higher resolution and greater accuracy; system call that employs a
+timeout value will be more precise; finer resolution of measurments; process
+preemption more accurate.
+
+Disadvantage:more time on time interrupt handler, quicker to overflow.
 
 =================================== P5Q1 end ===================================
 
 ================================== P5Q2 start ==================================
 What is the HZ currently configured for your running Linux system?
 
-	/* TODO */
+250. We find it by "grep 'CONFIG_HZ=' /boot/config-$(uname -r)"
+(100 was found in /linux/include/asm-generic/param.h but wasn't used)
 
 =================================== P5Q2 end ===================================
 
 ================================== P5Q3 start ==================================
 What are jiffies? Explain the relationship between jiffies, HZ, and time.
 
-	/* TODO */
+The number of ticks that have occurred since the system booted.
+Jiffies / HZ = (length of time since the system booted)
 
 =================================== P5Q3 end ===================================
 
 ================================== P5Q4 start ==================================
 Find the current value of jiffies in your system.
-	- In minutes, how much time does this jiffies value represent?
-	- Does it match the uptime reported by the uptime command? (Hint: it
-	  doesn’t.) Please give the formula to convert jiffies to the current
-	  (real) uptime, in minutes.
-	- Why does this large difference exist? (Hint: in 32-bit Linux systems,
-	  jiffies is a 32-bit value.)
+    - In minutes, how much time does this jiffies value represent?
+    - Does it match the uptime reported by the uptime command? (Hint: it 
+      doesn’t.) Please give the formula to convert jiffies to the current 
+      (real) uptime, in minutes.
+    - Why does this large difference exist? (Hint: in 32-bit Linux systems,
+      jiffies is a 32-bit value.)
 
-	/* TODO */
+jiffies is 4298944282. It represents 4298944282/(250 * 60) = 286569.29 minutes.
+No, it doesn't, the real time is 4 hours 30 minutes.
+real uptime = (jiffies - (0x100000000- 300 * HZ) )/(HZ * 60) minutes
+real uptime = (4298944282 - (0x100000000 - 300 * 250))/(250*60)=270.13 minutes
+
+The jiffies start at 0x100000000 - 300*HZ to test overflow. Because after 300
+seconds, the jiffies will need more than 32 bits to represent it.
 
 =================================== P5Q4 end ===================================
 
 ================================== P5Q5 start ==================================
 What are Niffies? How do they differ from Jiffies?
 
-	/* TODO */
+Niffies are monotonic forward moving timer with nanosecond resolution, which
+was used in BFS. Jiffies are with 1/HZ second resolution.
+Niffies are per-runqueue variable while Jiffies are per-system global variable.
 
 =================================== P5Q5 end ===================================
