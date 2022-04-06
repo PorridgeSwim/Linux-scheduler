@@ -1,4 +1,4 @@
-﻿Answers for parts  1 - 5
+Answers for parts  1 - 5
 Enter your answers in the designated location. Do NOT remove lines that start
 with '=' signs. Removing these lines will break our grading scrips and will
 result in 0 points. Also, keep lines to a max of 80 chars long (you do not
@@ -8,60 +8,39 @@ your answers to about 40 words.
 ================================== P1Q1 start ==================================
 Describe how you created the 70%/30% split. 
 
-1.At the test.py’s directory, run create10.sh to create 10 processes.
-The first group, which should use 70% of the CPU contains the processes of which nice values are  {10, 10, 10, 14, 14}. Their weight sum up to 420.
-The second group, which use 30% of the CPU contains the processes of which nice values are {15, 15, 15, 15, 15}. Their weight sum up to 180. 
-420:180 = 7:3, thus these processes can create the 70-30 situation.
-2. Use taskset to let all 10 processes run on cpu1. <pid1> <pid2> … <pid10> are pids for the 10 processes, which can be found in the output of top command.
+We find that when nice = 16, the weight is 29. And when nice = 12, weight is 70.
+And 29/70 is close to 30/70. Then we design a program myprogram where we fork 5
+times, and we use while(1) to make it run forever. By using the terminal
+command, we run the myprogram twice with different nice value.
 
-    - Include the command lines you executed
+	- Include the command lines you executed
 
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-nice -n 10 pyton3 test.py &
-top
-taskset -cp 1 <pid1>
-taskset -cp 1 <pid2>
-taskset -cp 1 <pid3>
-taskset -cp 1 <pid4>
-taskset -cp 1 <pid5>
-taskset -cp 1 <pid6>
-taskset -cp 1 <pid7>
-taskset -cp 1 <pid8>
-taskset -cp 1 <pid9>
-taskset -cp 1 <pid10>
+taskset -c 1 nice -n 12 ./program &
+taskset -c 1 nice -n 16 ./program &
+htop
 
-    - Indicate if you needed root privileges for any of those commands
+	- Indicate if you needed root privileges for any of those commands
 
 No command need root privilege
 
-    - Include the top output
+	- Include the top output
 
-top - 10:31:55 up  6:50,  1 user,  load average: 10.16, 6.81, 3.69
-Tasks: 182 total,  11 running, 171 sleeping,   0 stopped,   0 zombie
-%Cpu(s):  0.2 us,  0.2 sy, 50.2 ni, 47.7 id,  0.0 wa,  0.0 hi,  1.8 si,  0.0 st
-MiB Mem :   3902.4 total,    111.6 free,    692.4 used,   3098.4 buff/cache
-MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2902.4 avail Mem 
+	0[|                          1.3%]   Tasks: 83, 109 thr; 2 running
+	1[|||||||||||||||||||||||||100.0%]   Load average: 9.99 6.86 3.90
+  Mem[|||||||||||||||||||||489M/3.81G]   Uptime: 02:22:31
+  Swp[                        0K/975M]
 
-    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
-   4209 aster233  30  10   14672   7420   5036 R  18.3   0.2   0:58.94 python3  
-   4211 aster233  30  10   14672   7424   5036 R  18.3   0.2   0:59.43 python3  
-   4210 aster233  30  10   14672   7332   4948 R  17.9   0.2   1:01.86 python3  
-   4212 aster233  34  14   14672   7216   4832 R   7.6   0.2   0:24.15 python3  
-   4213 aster233  34  14   14672   7236   4852 R   7.6   0.2   0:24.01 python3  
-   4214 aster233  35  15   14672   7432   5032 R   6.0   0.2   0:19.22 python3  
-   4215 aster233  35  15   14672   7376   4992 R   6.0   0.2   0:19.63 python3  
-   4216 aster233  35  15   14672   7184   4804 R   6.0   0.2   0:20.15 python3  
-   4217 aster233  35  15   14672   7280   4896 R   6.0   0.2   0:20.78 python3  
-   4218 aster233  35  15   14672   7288   4904 R   6.0   0.2   0:22.14 python3
-
+	PID▽USER      PRI  NI  VIRT   RES   SHR S CPU% MEM%   TIME+  Command
+	2101 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./program
+	2100 debbie     36  16  2172    72     0 R  6.6  0.0  0:17.37 ./program
+	2099 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./program
+	2098 debbie     36  16  2172    72     0 R  6.0  0.0  0:17.36 ./program
+	2097 debbie     36  16  2172    72     0 R  6.6  0.0  0:17.37 ./program
+	2095 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.49 ./program
+	2094 debbie     32  12  2172    68     0 R 14.6  0.0  0:42.49 ./program
+	2093 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.48 ./program
+	2092 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.49 ./program
+	2091 debbie     32  12  2172    68     0 R 13.9  0.0  0:42.48 ./program
 
 
 =================================== P1Q1 end ===================================
@@ -69,44 +48,42 @@ MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2902.4 avail Mem
 ================================== P1Q2 start ==================================
 Describe how you created a real-time priority task.
 
-Add a new real-time process which uses round robin policy.
-Then let the new process run on the same cpu with the previous 10 processes.
-<pid11> is the pid of the new process.
+We create a new program myprogram2. The only change we made from myprogram is 
+that we fork one more time in myprogram2 and set the new process to be real 
+time by sched_setscheduler().
 
-    - Include the command lines you executed
+	- Include the command lines you executed
 
-sudo chrt -r 1 python3 test.py &
-top
-sudo taskset -cp 1 <pid11>
+taskset -c 1 nice -n 16 ./program &
+sudo taskset -c 1 nice -n 12 ./program2 &
+htop
 
-    - Indicate if you needed root privileges for any of those commands
+	- Indicate if you needed root privileges for any of those commands
 
-Runing a real time process need root privilege. Setting affinity of a root user’s process also need root privilege.
+Running myprogram2 need root privilege because it sets the schedule policy of a
+process.
 
-    - Include the top output
+	- Include the top output
 
+    0[|||                       5.3%]   Tasks: 82, 113 thr; 2 running
+    1[||||||||||||||||||||||||100.0%]   Load average: 11.81 6.69 2.78
+  Mem[||||||||            437M/3.81G]   Uptime: 00:04:49
+  Swp[                       0K/975M]
 
-top - 10:38:24 up  6:57,  1 user,  load average: 12.45, 10.29, 6.32
-Tasks: 183 total,  14 running, 169 sleeping,   0 stopped,   0 zombie
-%Cpu(s): 48.2 us,  0.5 sy,  2.3 ni, 46.8 id,  0.0 wa,  0.0 hi,  2.2 si,  0.0 st
-MiB Mem :   3902.4 total,    125.3 free,    685.9 used,   3091.2 buff/cache
-MiB Swap:    975.0 total,    968.4 free,      6.5 used.   2908.9 avail Mem 
-
-    PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND  
-   4265 root      -2   0   14668   7280   4904 R  95.0   0.2   1:43.22 python3  
-   4209 aster233  30  10   14672   7420   5036 R   1.0   0.2   1:59.12 python3  
-   4211 aster233  30  10   14672   7424   5036 R   1.0   0.2   1:59.61 python3  
-   4210 aster233  30  10   14672   7332   4948 R   0.7   0.2   2:02.04 python3  
-   4212 aster233  34  14   14672   7216   4832 R   0.3   0.2   0:48.76 python3  
-   4213 aster233  34  14   14672   7236   4852 R   0.3   0.2   0:48.63 python3  
-   4214 aster233  35  15   14672   7432   5032 R   0.3   0.2   0:38.91 python3  
-   4215 aster233  35  15   14672   7376   4992 R   0.3   0.2   0:39.32 python3  
-   4216 aster233  35  15   14672   7184   4804 R   0.3   0.2   0:39.84 python3  
-   4217 aster233  35  15   14672   7280   4896 R   0.3   0.2   0:40.47 python3  
-   4218 aster233  35  15   14672   7288   4904 R   0.3   0.2   0:41.84 python3 
+    PID USER      PRI  NI  VIRT   RES   SHR S CPU% MEM%   TIME+  Command△
+   1061 debbie     36  16  2172    68     0 R  0.0  0.0  0:01.24 ./program
+   1062 debbie     36  16  2172    68     0 R  0.0  0.0  0:01.24 ./program
+   1063 debbie     36  16  2172    68     0 R  0.7  0.0  0:01.25 ./program
+   1064 debbie     36  16  2172    68     0 R  0.7  0.0  0:01.25 ./program
+   1065 debbie     36  16  2172    68     0 R  0.7  0.0  0:01.25 ./program
+   1068 root       32  12  2172    68     0 R  0.0  0.0  0:01.59 ./program2
+   1069 root       32  12  2172    68     0 R  0.7  0.0  0:01.59 ./program2
+   1070 root       32  12  2172    68     0 R  0.7  0.0  0:01.59 ./program2
+   1071 root       32  12  2172    68     0 R  0.7  0.0  0:01.59 ./program2
+   1072 root       32  12  2172    68     0 R  0.7  0.0  0:01.59 ./program2
+   1074 root      -31  12  2172    68     0 R 96.7  0.0  3:42.22 ./program2
 
 =================================== P1Q2 end ===================================
-
 
 
 ================================== P2Q1 start ==================================
@@ -180,8 +157,10 @@ Describe how you created a real-time priority task.
 ================================== P3Q3 start ==================================
 MuQSS features unprivileged real-time tasks. Perform the previous task with and
 without root privileges, and describe the differences. 
-
-    /* TODO */
+With root privileges, the real time process still occupy about 70% of the cpu
+while other 10 process hardly occupied the cpu. Without the root privileges,
+the real time process occupied about 40%-60% cpu, while the other 10 process
+occupies about 0.5%-3% cpu.
 
 =================================== P3Q3 end ===================================
 
@@ -191,7 +170,20 @@ without root privileges, and describe the differences.
 Verify Con Kolivas' claim by timing the kernel build-time in both your fallback
 and your MuQSS-patched kernels.
     
-    /* TODO */ 
+We run time make -j2 on both kernels, here is our result:
+The Muqss kernel had shorter system time, but longer user time and real time.
+
+On Muqss kernel:
+real time: 11m36s
+user: 21m24s
+sys: 2m17s
+
+On cs-4118 kernel:
+real time: 10m13s
+user: 16m31s
+sys: 2m38s
+
+
 
 =================================== P4Q1 end ===================================
 
@@ -199,7 +191,10 @@ and your MuQSS-patched kernels.
 Design an experiment that you think will highlight MuQSS’s strength. Perform 
 the experiment and report your findings.
 
-    /* TODO */ 
+We compress the hw5 directory (1.1GB) to test the speed of two kernels, and the
+final hw5.zip file is 429MB. We found that both kernel use almost same real 
+time to compress the hw5. But muqss kernel used more time on user and less time
+on system than the origin kernel.
 
 =================================== P4Q2 end ===================================
 
@@ -208,21 +203,26 @@ the experiment and report your findings.
 ================================== P5Q1 start ==================================
 Briefly describe the advantages and disadvantages of a larger HZ.
 
-    /* TODO */ 
+Advantages:higher resolution and greater accuracy; system call that employs a
+timeout value will be more precise; finer resolution of measurments; process
+preemption more accurate.
+
+Disadvantage:more time on time interrupt handler, quicker to overflow.
 
 =================================== P5Q1 end ===================================
 
 ================================== P5Q2 start ==================================
 What is the HZ currently configured for your running Linux system?
 
-    /* TODO */ 
+250. We find it in /linux/include/asm-generic/param.h
 
 =================================== P5Q2 end ===================================
 
 ================================== P5Q3 start ==================================
 What are jiffies? Explain the relationship between jiffies, HZ, and time.
 
-    /* TODO */ 
+The number of ticks that have occurred since the system booted.
+Jiffies / HZ = (length of time since the system booted)
 
 =================================== P5Q3 end ===================================
 
@@ -235,13 +235,21 @@ Find the current value of jiffies in your system.
     - Why does this large difference exist? (Hint: in 32-bit Linux systems,
       jiffies is a 32-bit value.)
 
-    /* TODO */ 
+jiffies is 4298944282. It represents 4298944282/(250 * 60) = 286569.29 minutes.
+No, it doesn't, the real time is 4 hours 30 minutes.
+real uptime = (jiffies - (0x100000000- 300 * HZ) )/(HZ * 60) minutes
+real uptime = (4298944282 - (0x100000000 - 300 * 250))/(250*60)=270.13 minutes
+
+The jiffies start at 0x100000000 - 300*HZ to test overflow. Because after 300
+seconds, the jiffies will need more than 32 bits to represent it.
 
 =================================== P5Q4 end ===================================
 
 ================================== P5Q5 start ==================================
 What are Niffies? How do they differ from Jiffies?
 
-    /* TODO */ 
+Niffies are monotonic forward moving timer with nanosecond resolution, which
+was used in BFS. Jiffies are with 1/HZ second resolution.
+Niffies are per-runqueue variable while Jiffies are per-system global variable.
 
 =================================== P5Q5 end ===================================
