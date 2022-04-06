@@ -8,10 +8,10 @@ your answers to about 40 words.
 ================================== P1Q1 start ==================================
 Describe how you created the 70%/30% split. 
 
-We find that when nice = 16, the weight is 29. And when nice = 12, weight is 70. And
-29/70 is close to 30/70. Then we design a program myprogram where we fork 5 times, and
-we use while(1) to make it run forever. By using the terminal command, we run the
-myprogram twice with different nice value.
+We find that when nice = 16, the weight is 29. And when nice = 12, weight is 70.
+And 29/70 is close to 30/70. Then we design a program myprogram where we fork 
+5 times, and we use while(1) to make it run forever. By using the terminal 
+command, we run the myprogram twice with different nice value.
 
 	- Include the command lines you executed
 
@@ -48,9 +48,9 @@ No command need root privilege
 ================================== P1Q2 start ==================================
 Describe how you created a real-time priority task.
 
-We create a new program myprogram2. The only change we made from myprogram is that
-we fork one more time in myprogram2 and set the new process to be real time by
-sched_setscheduler().
+We create a new program myprogram2. The only change we made from myprogram is 
+that we fork one more time in myprogram2 and set the new process to be real time
+by sched_setscheduler().
 
 	- Include the command lines you executed
 
